@@ -9,6 +9,7 @@ WITH RECURSIVE comment_replies AS (
     FROM comments child
     JOIN comment_replies parent ON parent.id = child.comment_id
 )
+
 CYCLE id SET is_cycle USING path
 SELECT * FROM comment_replies
 WHERE NOT is_cycle

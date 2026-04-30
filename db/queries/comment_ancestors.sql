@@ -12,4 +12,6 @@ WITH RECURSIVE comment_ancestors AS (
     JOIN posts p ON p.id = parent.post_id
 )
 
+CYCLE id SET is_cycle USING PATH
 SELECT * FROM comment_ancestors
+WHERE NOT is_cycle
