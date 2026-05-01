@@ -29,6 +29,7 @@ CREATE TABLE public.comment_votes (
     comment_id bigint,
     vote_type smallint NOT NULL,
     created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone,
     CONSTRAINT comment_votes_vote_type_check CHECK ((vote_type = ANY (ARRAY['-1'::integer, 1])))
 );
 
@@ -151,7 +152,8 @@ CREATE TABLE public.users (
     id bigint NOT NULL,
     username character varying(50) NOT NULL,
     created_at timestamp with time zone DEFAULT now(),
-    updated_at timestamp with time zone
+    updated_at timestamp with time zone,
+    password character varying(255) NOT NULL
 );
 
 
@@ -321,4 +323,6 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('002'),
     ('003'),
     ('004'),
-    ('005');
+    ('005'),
+    ('006'),
+    ('007');
