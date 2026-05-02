@@ -251,6 +251,13 @@ CREATE INDEX idx_comments_comment_id ON public.comments USING btree (comment_id)
 
 
 --
+-- Name: idx_comments_deleted_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_comments_deleted_at ON public.comments USING btree (deleted_at) WHERE (deleted_at IS NULL);
+
+
+--
 -- Name: idx_comments_post_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -342,4 +349,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('007'),
     ('008'),
     ('009'),
-    ('010');
+    ('010'),
+    ('011');
