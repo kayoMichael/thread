@@ -19,7 +19,7 @@ def upsert_comment_vote(user_id: int, comment_id: int, vote_type: Literal[1, 0, 
             cur.execute("""
                         INSERT INTO comment_votes (user_id, comment_id, vote_type)
                         VALUES (%s, %s, %s)
-                        ON CONFLICT DO UPDATE SET vote_type = EXCLUDED.vote_type, updated_at = NOW()
+                        ON CONFLICT (user_id, comment_id) DO UPDATE SET vote_type = EXCLUDED.vote_type, updated_at = NOW()
                         WHERE comment_votes.vote_type IS DISTINCT FROM EXCLUDED.vote_type
                         """, (user_id, comment_id, vote_type))
 
@@ -32,7 +32,7 @@ def comment_vote_count(comment_id: int):
                     WHERE comment_id = %s
                     """, (comment_id,))
 
-        vote_count = cur.fetchone()
+        vote_count = cur.fetchone()[0]
         return vote_count
     
 

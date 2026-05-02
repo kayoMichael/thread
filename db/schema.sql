@@ -284,6 +284,14 @@ ALTER TABLE ONLY public.comments
 
 
 --
+-- Name: comment_votes fk_comment_votes_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment_votes
+    ADD CONSTRAINT fk_comment_votes_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: post_votes post_votes_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -325,4 +333,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('004'),
     ('005'),
     ('006'),
-    ('007');
+    ('007'),
+    ('008');

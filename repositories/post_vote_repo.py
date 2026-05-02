@@ -1,7 +1,7 @@
 from typing import Literal
 from db.connection import get_cursor
 
-def upsert_post_vote(user_id: int, post_id: int, vote_type: Literal[-1, 0, 1]):
+def upsert_post_vote(user_id: int, post_id: int, vote_type: Literal[-1, 0, 1]) -> int:
     """Set, change, or clear a user's vote on a post.
 
     `vote_type` of 1 (upvote) or -1 (downvote) inserts a new vote row, or
@@ -13,7 +13,9 @@ def upsert_post_vote(user_id: int, post_id: int, vote_type: Literal[-1, 0, 1]):
             cur.execute("""
                         DELETE FROM post_votes
                         WHERE post_id = %s AND user_id = %s
+                        RETURNING id
                         """, (post_id, user_id))
+            return cur.fetchone()
     else:
         with get_cursor() as cur:
             cur.execute("""
@@ -21,8 +23,10 @@ def upsert_post_vote(user_id: int, post_id: int, vote_type: Literal[-1, 0, 1]):
                         VALUES (%s, %s, %s)
                         ON CONFLICT (user_id, post_id)
                         DO UPDATE SET vote_type = EXCLUDED.vote_type, updated_at = NOW()
-                        WHERE post_votes.vote_type IS DISTINCT FROM EXCLUDED.vote_type;
+                        WHERE post_votes.vote_type IS DISTINCT FROM EXCLUDED.vote_type
+                        RETURNING post_votes.id
                         """, (user_id, post_id, vote_type))
+            return cur.fetchone()
             
 def post_vote_count(post_id):
     """Return the total number of votes (up + down combined) on a post."""

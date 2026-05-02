@@ -1,19 +1,21 @@
 from db.connection import get_cursor, run_query
 from typing import Optional
 
-def create_comment(post_id: Optional[int], comment_text: str, author_id: int, comment_id: Optional[int]):
+def create_comment(post_id: Optional[int], comment_text: str, author_id: int, comment_id: Optional[int]) -> int:
     """Insert a new comment.
 
     Exactly one of `post_id` or `comment_id` should be non-null:
     `post_id` is set when the immediate parent is a post; `comment_id` is set
-    when the immediate parent is another comment.
+    when the immediate parent is another comment. Returns the id of the created comment
     """
     with get_cursor() as cur:
         cur.execute("""
                     INSERT INTO comments (post_id, comment_text, author_id, comment_id)
                     VALUES (%s, %s, %s, %s)
+                    RETURNING id
                     """, (post_id, comment_text, author_id, comment_id))
-
+        
+        return cur.fetchone()
 
 def update_comment(comment_id: int, comment_text: str):
     """Edit the text of an existing comment, identified by id."""
@@ -87,4 +89,4 @@ def comment_replies_count(comment_id: int):
                     WHERE comments.comment_id = %s
                     """, (comment_id,))
         
-        return cur.fetchall()
+        return cur.fetchone()[0]
