@@ -7,4 +7,4 @@ WITH RECURSIVE delete_comment AS (
     WHERE comment_id IN (SELECT id FROM delete_comment)
 )
 
-UPDATE comments SET deleted_at = NOW() WHERE id IN (SELECT ID FROM delete_comment) AND deleted_at IS NOT NULL
+UPDATE comments SET deleted_at = NOW() WHERE id IN (SELECT ID FROM delete_comment) AND deleted_at IS NULL

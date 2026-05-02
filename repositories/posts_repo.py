@@ -1,4 +1,4 @@
-from db.connection import get_cursor
+from db.connection import get_cursor, run_query
 from typing import Optional
 
 def create_post(title: str, body: str, author_id: int) -> int:
@@ -14,13 +14,14 @@ def create_post(title: str, body: str, author_id: int) -> int:
 
 
 def update_post(post_id: int, title: Optional[str], body: Optional[str]):
-    """Patch a post's title and/or body. Pass `None` for a field to leave it unchanged.
-    """
+    """Patch a post's title and/or body. Pass `None` for a field to leave it unchanged."""
     with get_cursor() as cur:
         cur.execute("""
                     UPDATE posts SET title = COALESCE(%s, title), body = COALESCE(%s, body), updated_at = NOW() WHERE id = %s
                     RETURNING updated_at
                     """, (title, body, post_id))
+        
+        return cur.fetchone()
 
 def delete_post(post_id: int):
     """Hard-delete a post. Cascades to its comments and post_votes via FK."""
@@ -36,7 +37,7 @@ def read_post(post_id: int):
                     SELECT * FROM posts WHERE id = %s
                     """, (post_id,))
         
-        return cur.fetchall()
+        return cur.fetchone()[0]
 
 def get_all_user_posts(user_id: int):
     """Return every post authored by the given user."""
@@ -58,7 +59,8 @@ def get_posts_user_commented_on(user_id: int):
         cur.execute("""
                     SELECT p.*, v.vote_type
                     FROM posts p
-                    JOIN post_votes v ON p.id = v.comment_id
+                    JOIN post_votes v ON p.id = v.post_id
+                    JOIN users u ON p.author_id = %s
                     """, (user_id,))
 
         return cur.fetchall()

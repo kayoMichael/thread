@@ -1,6 +1,7 @@
 WITH RECURSIVE post_comment_thread AS (
     SELECT c.*
-    FROM comments c WHERE c.post_id = %s AND c.deleted_at IS NULL
+    FROM comments c 
+    WHERE c.post_id = %s AND c.deleted_at IS NULL
 
     UNION ALL
 

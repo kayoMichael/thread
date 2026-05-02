@@ -15,7 +15,7 @@ def create_comment(post_id: Optional[int], comment_text: str, author_id: int, co
                     RETURNING id
                     """, (post_id, comment_text, author_id, comment_id))
         
-        return cur.fetchone()
+        return cur.fetchone()[0]
 
 def update_comment(comment_id: int, comment_text: str):
     """Edit the text of an existing comment, identified by id."""
@@ -35,7 +35,7 @@ def fetch_top_level_comment(post_id: int, author_id: int):
                     """, (post_id, author_id))
 
 
-        comment = cur.fetchone()
+        comment = cur.fetchone()[0]
         return comment
 
 
@@ -48,7 +48,7 @@ def select_single_comment_by_id(comment_id: int):
                     WHERE id = %s
                     """, (comment_id, ))
 
-        comment = cur.fetchone()
+        comment = cur.fetchone()[0]
         return comment
 
 
@@ -65,6 +65,10 @@ def get_comment_replies(comment_id: int):
 def soft_delete_comment(comment_id: int):
     """Soft-delete a comment and all of its descendants by setting `deleted_at`."""
     return run_query("delete_comments", (comment_id,))
+
+def get_post_thread(post_id: int):
+    """Return comment thread for a given post"""
+    return run_query("post_thread", (post_id, ))
 
 def get_all_comments_voted_by_user(user_id: int):
     """Return every comment the given user has voted on, with their vote type.
