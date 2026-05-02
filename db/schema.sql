@@ -244,19 +244,25 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: idx_comments_comment_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_comments_comment_id ON public.comments USING btree (comment_id);
+
+
+--
+-- Name: idx_comments_post_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_comments_post_id ON public.comments USING btree (post_id);
+
+
+--
 -- Name: comment_votes comment_votes_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.comment_votes
     ADD CONSTRAINT comment_votes_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comments(id);
-
-
---
--- Name: comment_votes comment_votes_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.comment_votes
-    ADD CONSTRAINT comment_votes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -334,4 +340,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('005'),
     ('006'),
     ('007'),
-    ('008');
+    ('008'),
+    ('009');
