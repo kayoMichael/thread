@@ -1,10 +1,12 @@
 WITH RECURSIVE delete_comment AS (
-    SELECT * FROM comments WHERE id = %s
+    SELECT id FROM comments WHERE id = %s
 
     UNION ALL
 
-    SELECT * FROM comments
-    WHERE comment_id IN (SELECT id FROM delete_comment)
+    SELECT c.id
+    FROM comments c
+    JOIN delete_comment d ON c.comment_id = d.id
 )
 
-UPDATE comments SET deleted_at = NOW() WHERE id IN (SELECT ID FROM delete_comment) AND deleted_at IS NULL
+UPDATE comments SET deleted_at = NOW()
+WHERE id IN (SELECT id FROM delete_comment) AND deleted_at IS NULL

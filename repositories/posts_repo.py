@@ -36,8 +36,8 @@ def read_post(post_id: int):
         cur.execute("""
                     SELECT * FROM posts WHERE id = %s
                     """, (post_id,))
-        
-        return cur.fetchone()[0]
+
+        return cur.fetchone()
 
 def get_all_user_posts(user_id: int):
     """Return every post authored by the given user."""

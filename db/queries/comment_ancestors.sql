@@ -3,7 +3,7 @@ WITH RECURSIVE
         SELECT c.id, c.comment_id, c.post_id, c.comment_text, p.title, p.body
         FROM comments c
         LEFT JOIN posts p ON p.id = c.post_id
-        WHERE id = %s
+        WHERE c.id = %s
 
         UNION ALL
 
