@@ -54,7 +54,7 @@ ALTER TABLE public.comment_votes ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTIT
 
 CREATE TABLE public.comments (
     id bigint NOT NULL,
-    author_id bigint,
+    author_id bigint NOT NULL,
     post_id bigint,
     comment_id bigint,
     comment_text text NOT NULL,
@@ -341,4 +341,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('006'),
     ('007'),
     ('008'),
-    ('009');
+    ('009'),
+    ('010');
